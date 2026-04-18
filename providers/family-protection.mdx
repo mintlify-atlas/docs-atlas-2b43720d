@@ -1,0 +1,179 @@
+---
+title: "Family protection DNS providers for safe browsing"
+description: "DNS providers that block adult content, malware, and phishing — suitable for households with children or shared devices requiring content controls."
+---
+
+Family protection providers block adult and explicit content in addition to malware and phishing, making them appropriate for shared devices or households with children. Because filtering happens at the DNS level, it applies to all apps on the device without requiring any additional software. You can combine these profiles with other parental controls for a layered approach.
+
+<Warning>
+  DNS-based content filtering can be bypassed by switching to a different DNS resolver or by using a VPN. For stronger enforcement on managed devices, pair these profiles with device management policies that prevent profile removal.
+</Warning>
+
+## Cloudflare 1.1.1.1 Family
+
+**Region:** 🇺🇸 US — Operated by Cloudflare Inc.
+
+Cloudflare's Family variant extends the standard resolver to block malware, phishing, and adult content. It uses the same anycast infrastructure as 1.1.1.1. Only DoH is available for this variant.
+
+| Detail | Value |
+|---|---|
+| IPv4 addresses | `1.1.1.3`, `1.0.0.3` |
+| IPv6 addresses | `2606:4700:4700::1113`, `2606:4700:4700::1003` |
+| DoH URL | `https://family.cloudflare-dns.com/dns-query` |
+
+**Download profile:**
+
+- [HTTPS (DoH)](https://github.com/paulmillr/encrypted-dns/raw/master/profiles/cloudflare-family-https.mobileconfig)
+
+---
+
+## OpenDNS FamilyShield
+
+**Region:** 🇺🇸 US — Operated by Cisco OpenDNS LLC
+
+OpenDNS FamilyShield is a free, zero-configuration content filter that blocks malware and adult content. No account is required. Only DoH is provided.
+
+| Detail | Value |
+|---|---|
+| DoH URL | `https://doh.familyshield.opendns.com/dns-query` |
+
+**Download profile:**
+
+- [HTTPS (DoH)](https://github.com/paulmillr/encrypted-dns/raw/master/profiles/opendns-family-https.mobileconfig)
+
+---
+
+## AdGuard DNS Family Protection
+
+**Region:** 🇷🇺 RU — Operated by AdGuard Software Ltd.
+
+AdGuard's Family Protection tier builds on the Default tier (ads, tracking, phishing) and also blocks malware and adult content. Both DoH and DoT are available.
+
+| Detail | Value |
+|---|---|
+| IPv4 addresses | `94.140.14.15`, `94.140.15.16` |
+| IPv6 addresses | `2a10:50c0::bad1:ff`, `2a10:50c0::bad2:ff` |
+| DoH URL | `https://dns-family.adguard.com/dns-query` |
+| DoT hostname | `dns-family.adguard.com` |
+
+**Download profile:**
+
+- [HTTPS (DoH)](https://github.com/paulmillr/encrypted-dns/raw/master/profiles/adguard-family-https.mobileconfig)
+- [TLS (DoT)](https://github.com/paulmillr/encrypted-dns/raw/master/profiles/adguard-family-tls.mobileconfig)
+
+---
+
+## Canadian Shield Family
+
+**Region:** 🇨🇦 CA — Operated by the Canadian Internet Registration Authority (CIRA)
+
+The Family tier of Canadian Shield adds adult content blocking on top of the Protected tier's malware and phishing filtering. CIRA's infrastructure is located in Canada. Both DoH and DoT are available.
+
+| Detail | Value |
+|---|---|
+| IPv4 addresses | `149.112.121.30`, `149.112.122.30` |
+| IPv6 addresses | `2620:10a:80bb::30`, `2620:10a:80bc::30` |
+| DoH URL | `https://family.canadianshield.cira.ca/dns-query` |
+| DoT hostname | `family.canadianshield.cira.ca` |
+
+**Download profile:**
+
+- [HTTPS (DoH)](https://github.com/paulmillr/encrypted-dns/raw/master/profiles/canadianshield-family-https.mobileconfig)
+- [TLS (DoT)](https://github.com/paulmillr/encrypted-dns/raw/master/profiles/canadianshield-family-tls.mobileconfig)
+
+---
+
+## Cleanbrowsing Family Filter
+
+**Region:** 🇺🇸 US — Operated by Cleanbrowsing
+
+The Family Filter blocks malware, adult content, and mixed-content sites (pages that embed adult content). It also blocks proxy and VPN services commonly used to circumvent filters. Both DoH and DoT are available.
+
+| Detail | Value |
+|---|---|
+| IPv4 addresses | `185.228.169.168`, `185.228.168.168` |
+| IPv6 addresses | `2a0d:2a00:1::`, `2a0d:2a00:1::` |
+| DoH URL | `https://doh.cleanbrowsing.org/doh/family-filter/` |
+| DoT hostname | `family-filter-dns.cleanbrowsing.org` |
+
+**Download profile:**
+
+- [HTTPS (DoH)](https://github.com/paulmillr/encrypted-dns/raw/master/profiles/cleanbrowsing-family-https.mobileconfig)
+- [TLS (DoT)](https://github.com/paulmillr/encrypted-dns/raw/master/profiles/cleanbrowsing-family-tls.mobileconfig)
+
+---
+
+## Cleanbrowsing Adult Filter
+
+**Region:** 🇺🇸 US — Operated by Cleanbrowsing
+
+The Adult Filter is slightly less aggressive than the Family Filter: it blocks malware and adult content, but it does not block mixed-content sites or proxy services. Both DoH and DoT are available.
+
+| Detail | Value |
+|---|---|
+| IPv4 addresses | `185.228.169.10`, `185.228.168.10` |
+| IPv6 addresses | `2a0d:2a00:1::1`, `2a0d:2a00:2::1` |
+| DoH URL | `https://doh.cleanbrowsing.org/doh/adult-filter/` |
+| DoT hostname | `adult-filter-dns.cleanbrowsing.org` |
+
+**Download profile:**
+
+- [HTTPS (DoH)](https://github.com/paulmillr/encrypted-dns/raw/master/profiles/cleanbrowsing-adult-https.mobileconfig)
+- [TLS (DoT)](https://github.com/paulmillr/encrypted-dns/raw/master/profiles/cleanbrowsing-adult-tls.mobileconfig)
+
+---
+
+## DNS4EU Protective with child protection
+
+**Region:** 🇨🇿 CZ — Operated by a consortium led by Whalebone
+
+This DNS4EU tier blocks malware and explicit content. It is part of the EU-backed DNS4EU initiative and offers both DoH and DoT.
+
+| Detail | Value |
+|---|---|
+| IPv4 addresses | `86.54.11.12`, `86.54.11.212` |
+| IPv6 addresses | `2a13:1001::86:54:11:12`, `2a13:1001::86:54:11:212` |
+| DoH URL | `https://child.joindns4.eu/dns-query` |
+| DoT hostname | `child.joindns4.eu` |
+
+**Download profile:**
+
+- [HTTPS (DoH)](https://github.com/paulmillr/encrypted-dns/raw/master/profiles/dns4eu-protective-child-https.mobileconfig)
+- [TLS (DoT)](https://github.com/paulmillr/encrypted-dns/raw/master/profiles/dns4eu-protective-child-tls.mobileconfig)
+
+---
+
+## DNS4EU Protective with child protection & ad-blocking
+
+**Region:** 🇨🇿 CZ — Operated by a consortium led by Whalebone
+
+The most comprehensive DNS4EU tier: it blocks malware, ads, and explicit content in one profile. Both DoH and DoT are available.
+
+| Detail | Value |
+|---|---|
+| IPv4 addresses | `86.54.11.11`, `86.54.11.211` |
+| IPv6 addresses | `2a13:1001::86:54:11:11`, `2a13:1001::86:54:11:211` |
+| DoH URL | `https://child-noads.joindns4.eu/dns-query` |
+| DoT hostname | `child-noads.joindns4.eu` |
+
+**Download profile:**
+
+- [HTTPS (DoH)](https://github.com/paulmillr/encrypted-dns/raw/master/profiles/dns4eu-protective-child-ads-https.mobileconfig)
+- [TLS (DoT)](https://github.com/paulmillr/encrypted-dns/raw/master/profiles/dns4eu-protective-child-ads-tls.mobileconfig)
+
+---
+
+## 360 Security DNS
+
+**Region:** 🇨🇳 CN — Operated by 360 Digital Security Group
+
+360 Security DNS is a Chinese provider that applies content filtering. It supports DoH only. It is primarily useful for users in mainland China.
+
+| Detail | Value |
+|---|---|
+| IPv4 addresses | `101.198.198.198`, `101.198.199.200` |
+| DoH URL | `https://doh.360.cn/dns-query` |
+
+**Download profile:**
+
+- [HTTPS (DoH)](https://github.com/paulmillr/encrypted-dns/raw/master/profiles/360-default-https.mobileconfig)

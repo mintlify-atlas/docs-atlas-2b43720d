@@ -1,0 +1,70 @@
+{
+  "projectType": "general",
+  "projectName": "Encrypted DNS",
+  "projectDescription": "A curated collection of DNS over HTTPS and DNS over TLS configuration profiles (.mobileconfig) for iOS and macOS, along with build scripts to generate and sign them.",
+  "theme": "palm",
+  "primaryColor": "#f3344c",
+  "lightColor": null,
+  "darkColor": null,
+  "navigation": {
+    "groups": [
+      {
+        "group": "Get Started",
+        "pages": [
+          "introduction",
+          "installation"
+        ]
+      },
+      {
+        "group": "DNS Providers",
+        "pages": [
+          "providers/overview",
+          "providers/no-filtering",
+          "providers/ad-blocking",
+          "providers/family-protection",
+          "providers/security-filtering"
+        ]
+      },
+      {
+        "group": "Guides",
+        "pages": [
+          "guides/understanding-encrypted-dns",
+          "guides/on-demand-rules",
+          "guides/known-issues"
+        ]
+      },
+      {
+        "group": "Contributing",
+        "pages": [
+          "contributing/adding-providers",
+          "contributing/build-scripts",
+          "contributing/signing-profiles"
+        ]
+      }
+    ]
+  },
+  "keyFeatures": [
+    "Ready-to-install .mobileconfig profiles for iOS and macOS",
+    "Supports both DNS over HTTPS (DoH) and DNS over TLS (DoT)",
+    "35+ providers including Cloudflare, Google, Quad9, AdGuard, OpenDNS, and more",
+    "Signed profiles for verified installation",
+    "On-demand rules to exclude trusted Wi-Fi networks",
+    "Build scripts to generate and sign profiles from JSON source definitions",
+    "Multilingual documentation (English, Simplified Chinese, Traditional Chinese)",
+    "Interactive CLI tool to create custom profiles"
+  ],
+  "publicApiSurface": [
+    "npm run build — rebuild all profiles from JSON sources",
+    "npm run sign — re-sign all profiles with an ECC SSL certificate",
+    "npm run new — interactively create a new custom profile",
+    "npm run test — parity check for signing implementations",
+    "src/scripts/sign-single.ts — sign a single .mobileconfig file",
+    "src/scripts/sign-single-openssl.sh — sign using OpenSSL",
+    "src/scripts/detach.ts — detach CMS signature from a signed profile",
+    "genProfile(name, profile) — generate a .mobileconfig XML string",
+    "getProfiles(name, variant) — get all protocol profiles for a variant",
+    "getVariants(name, provider) — get all resolved variants for a provider",
+    "validateDnsInput(x, where) — validate DNS endpoint configuration",
+    "signFile(args) — sign a .mobileconfig file with a certificate"
+  ]
+}

@@ -1,0 +1,98 @@
+---
+title: "How DNS over HTTPS and DNS over TLS work on Apple devices"
+description: "Learn how DoH and DoT encrypt your DNS queries, how Apple configuration profiles apply them system-wide, and what encrypted DNS does and does not protect."
+---
+
+When you type a domain name into your browser, your device first asks a DNS server to translate that name into an IP address. By default, this lookup happens in plain text — visible to your ISP, network administrators, and anyone monitoring traffic on your network. DNS over HTTPS (DoH) and DNS over TLS (DoT) fix this by encrypting those queries before they leave your device.
+
+## What is DNS and why it matters
+
+DNS (Domain Name System) is the internet's address book. Every time you visit a website, send an email, or use an app, your device performs a DNS lookup to find the IP address behind the domain name.
+
+Traditional DNS uses port 53 and sends queries unencrypted. This means:
+
+- Your ISP can see every domain you visit, even if the site itself uses HTTPS.
+- Anyone on the same network — at a café, hotel, or airport — can observe your queries.
+- Network-level censorship tools can intercept and falsify DNS responses.
+
+Encrypted DNS solves these problems by wrapping queries in a secure transport layer before they leave your device.
+
+## What is DNS over HTTPS (DoH)
+
+DNS over HTTPS is defined in [RFC 8484](https://www.rfc-editor.org/rfc/rfc8484). It sends DNS queries as standard HTTPS requests over port 443 — the same port used for all secure web traffic.
+
+Because DoH uses port 443, it is nearly indistinguishable from regular web traffic. Networks that restrict DNS traffic cannot easily block DoH without also blocking all HTTPS connections.
+
+The Apple DNSSettings configuration payload uses the key `ServerURL` to specify the DoH endpoint (for example, `https://dns.example/dns-query`).
+
+<Info>
+  DoH is generally the better choice on untrusted public networks, where port 853 (used by DoT) may be blocked by the network operator.
+</Info>
+
+## What is DNS over TLS (DoT)
+
+DNS over TLS is defined in [RFC 7858](https://www.rfc-editor.org/rfc/rfc7858). It wraps DNS queries in a TLS connection over port 853.
+
+DoT provides the same encryption as DoH but uses a dedicated, non-standard port. This makes it easier for network operators, firewalls, and ISPs to identify and block DoT traffic specifically — without affecting regular web browsing.
+
+The Apple DNSSettings payload uses the key `ServerName` (a hostname, not a URL) for DoT endpoints.
+
+## DoH vs DoT: when to use each
+
+| | DNS over HTTPS (DoH) | DNS over TLS (DoT) |
+|---|---|---|
+| **Standard** | RFC 8484 | RFC 7858 |
+| **Port** | 443 (HTTPS) | 853 |
+| **Blockable by networks** | Hard — blends with web traffic | Easier — dedicated port |
+| **Best for** | Public Wi-Fi, restrictive networks | Home networks with trusted firewalls |
+
+<Tip>
+  If you are on a public network or in a region where DNS filtering is common, prefer DoH. At home on a network you control, either protocol works equally well.
+</Tip>
+
+## How Apple configuration profiles work
+
+On iOS 14+ and macOS Big Sur (11)+, Apple supports system-wide encrypted DNS through configuration profiles — `.mobileconfig` files that define a `DNSSettings` payload.
+
+The key fields inside the payload are:
+
+- **`PayloadType`**: must be `com.apple.dnsSettings.managed`
+- **`DNSProtocol`**: either `HTTPS` or `TLS`
+- **`ServerURL`** (DoH) or **`ServerName`** (DoT): the resolver endpoint
+- **`ServerAddresses`**: optional list of IP addresses for the resolver
+- **`OnDemandRules`**: optional rules for when to activate or bypass the profile
+
+Once installed, the profile applies to all DNS queries made by the system — including those from apps, background services, and Safari.
+
+<Note>
+  Configuration profiles require iOS 14 or later, or macOS Big Sur (11) or later. Older OS versions do not support the `com.apple.dnsSettings.managed` payload type.
+</Note>
+
+## What signed profiles are
+
+Some profiles in this project are distributed in a signed form. A signed profile has been cryptographically signed using a certificate — in this case using [micro-key-producer](https://github.com/paulmillr/micro-key-producer) and a Let's Encrypt certificate.
+
+When you install a signed profile, your device can verify that the profile has not been tampered with since it was signed. An unsigned profile works identically but displays a warning during installation that the profile is unsigned.
+
+Signed profiles offer extra assurance that the DNS server settings you are installing are exactly what the maintainer published.
+
+## Privacy considerations
+
+Encrypted DNS protects your queries in transit — between your device and the DNS resolver. Here is what it does and does not protect:
+
+<AccordionGroup>
+  <Accordion title="What encrypted DNS protects you from">
+    - **ISP monitoring**: your ISP cannot read your DNS queries when they are encrypted.
+    - **Network-level tracking**: routers, hotspots, and man-in-the-middle observers on your local network cannot see the domains you look up.
+    - **DNS tampering**: encrypted DNS prevents third parties from injecting false DNS responses to redirect you to malicious sites.
+  </Accordion>
+  <Accordion title="What encrypted DNS does NOT protect you from">
+    - **The DNS provider itself**: the resolver you choose still sees every query you make. You are shifting trust from your ISP to the DNS provider.
+    - **IP-level tracking**: your DNS queries are encrypted, but the IP addresses you connect to remain visible to your ISP and network.
+    - **App-level tracking**: apps that embed their own DNS resolution (like Firefox in certain regions) bypass the system DNS entirely.
+    - **iCloud Private Relay**: Apple's Private Relay uses its own DNS infrastructure and is not affected by configuration profiles.
+  </Accordion>
+  <Accordion title="Does using a filtering provider affect my privacy?">
+    Filtering providers (those that block ads, malware, or adult content) must inspect your DNS queries to decide whether to block them. A non-filtering provider such as Cloudflare 1.1.1.1 or Google Public DNS resolves queries without content filtering. See [DNS providers](/providers/overview) for a full comparison.
+  </Accordion>
+</AccordionGroup>

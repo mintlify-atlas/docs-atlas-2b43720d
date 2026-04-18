@@ -1,0 +1,103 @@
+---
+title: "Sign mobileconfig profiles with a certificate"
+description: "Learn how to sign DNS configuration profiles with an ECC SSL certificate so Apple displays your identity during profile installation on iOS and macOS."
+---
+
+When you install an unsigned `.mobileconfig` profile on iOS or macOS, Apple shows a warning that the profile source is unknown. A signed profile replaces that warning with the certificate's organization name, giving users confidence that the profile hasn't been tampered with since it was published.
+
+Signing uses CMS (Cryptographic Message Syntax), the same format that Apple's profile signing tools produce. The project uses the [`micro-key-producer`](https://github.com/paulmillr/micro-key-producer) library (`CMS.compact.sign` and `CMS.compact.build`) to create and embed signatures.
+
+## Certificate requirements
+
+You need an ECC SSL certificate. A free Let's Encrypt certificate works well for this purpose.
+
+<Warning>
+Let's Encrypt certificates [expire after 45 days](https://letsencrypt.org/2026/02/24/rate-limits-45-day-certs). You must re-sign all profiles after renewing your certificate, otherwise the embedded signatures will reference an expired cert.
+</Warning>
+
+After obtaining a certificate, you will have four files. All four are referenced by the signing scripts:
+
+| File | Description |
+|------|-------------|
+| `privkey.pem` | Private key for your certificate |
+| `fullchain.pem` | Full certificate chain used by most server software |
+| `chain.pem` | Intermediate chain, used for OCSP stapling |
+| `cert.pem` | End-entity certificate |
+
+## Sign all profiles
+
+<Steps>
+  <Step title="Place cert files in src/certificates/">
+    Create a `certificates/` subdirectory inside `src/` and copy your certificate files there:
+
+    ```
+    src/
+    └── certificates/
+        ├── privkey.pem
+        ├── fullchain.pem
+        ├── chain.pem
+        └── cert.pem
+    ```
+  </Step>
+  <Step title="Run npm run sign">
+    ```bash
+    npm run sign
+    ```
+
+    This reads every provider JSON file, computes a CMS signature for each profile using `src/certificates/cert.pem` and `src/certificates/chain.pem`, and writes the hex-encoded signature back into the `signature` field of the JSON source. Run `npm run build` afterwards to regenerate the signed `.mobileconfig` output files.
+  </Step>
+</Steps>
+
+## Sign a single profile
+
+Use `sign-single.ts` to sign one `.mobileconfig` file without touching any JSON source files:
+
+```bash
+node src/scripts/sign-single.ts \
+  --ca cert.pem \
+  --priv_key key.pem \
+  [--chain chain.pem] \
+  path.mobileconfig
+```
+
+The signed file is written alongside the input as `path.signed.mobileconfig`. For example, signing `profiles/cloudflare-default-https.mobileconfig` produces `profiles/cloudflare-default-https.signed.mobileconfig`.
+
+## Alternative: OpenSSL signing
+
+A shell-script alternative is available for environments where you want to use OpenSSL directly instead of the Node.js library:
+
+```bash
+src/scripts/sign-single-openssl.sh \
+  --ca cert.pem \
+  --priv_key key.pem \
+  [--chain chain.pem] \
+  path.mobileconfig
+```
+
+<Note>
+The OpenSSL script passes `-nosmimecap` to match the local CMS signing policy used by the TypeScript implementation. The `npm run test` command verifies that both approaches produce equivalent output.
+</Note>
+
+## How signing works
+
+1. The build script generates the plain plist XML for each profile.
+2. `CMS.compact.sign` computes a compact CMS signature over the XML bytes using the private key.
+3. `CMS.compact.build` embeds the signature, certificate, and chain into a DER-encoded CMS structure.
+4. The DER bytes are written as the signed `.mobileconfig` file.
+5. On iOS and macOS, Apple verifies the CMS signature against the embedded certificate during profile installation.
+
+The hex-encoded compact signature is stored in the `signature` field of the provider JSON so the build system can reconstruct the signed file without re-running the signing step each time.
+
+## Verify a signature
+
+Use `detach.ts` to extract the CMS signature from a signed profile and print the PEM to stdout:
+
+```bash
+node src/scripts/detach.ts signed.mobileconfig
+```
+
+You can pipe the output to `openssl cms -verify` or inspect it with any CMS/PKCS#7 tool to confirm the certificate and signature are valid.
+
+<Tip>
+To verify that a signed profile's addresses and hostnames match a provider's official documentation, open the unsigned `.mobileconfig` file from `profiles/` in a text editor and compare the values to the provider's website directly.
+</Tip>

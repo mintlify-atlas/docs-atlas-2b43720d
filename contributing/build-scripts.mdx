@@ -1,0 +1,162 @@
+---
+title: "Build and generate DNS configuration profiles"
+description: "Learn how to use the npm scripts to regenerate mobileconfig profiles, create custom profiles interactively, and verify signing parity against OpenSSL."
+---
+
+The project uses a small set of npm scripts to regenerate profiles from JSON sources, create one-off custom profiles, and verify signing correctness. All scripts are TypeScript files run directly with `node --experimental-strip-types` — no separate compile step is needed.
+
+## Prerequisites
+
+- Node.js 22 or later (uses `--experimental-strip-types`)
+- npm
+
+Install dependencies before running any script:
+
+```bash
+npm install
+```
+
+## Available scripts
+
+| Script | Description |
+|--------|-------------|
+| `npm run build` | Cleans and regenerates all profiles and READMEs from JSON sources |
+| `npm run sign` | Re-signs all profiles using an ECC SSL certificate |
+| `npm run new` | Interactively creates a new profile from CLI options |
+| `npm run test` | Parity check for `sign-single.ts` vs `sign-single-openssl.sh` |
+
+---
+
+## `npm run build`
+
+`npm run build` first removes all existing output files, then reads every `src/NN-slug.json` file and generates:
+
+- Unsigned `.mobileconfig` plist files in `profiles/`
+- Signed `.mobileconfig` files in `signed/` (only when cert files are present and a `signature` field is set in the JSON)
+- Updated `README.md` files for all supported languages
+
+```bash
+npm run build
+```
+
+<Note>
+  Signed profiles require `src/certificates/cert.pem` and `src/certificates/chain.pem` to be present. If those files are missing, the build skips signing and logs a warning for each affected profile. See [signing profiles](/contributing/signing-profiles) for how to set up certificates.
+</Note>
+
+---
+
+## `npm run new`
+
+`npm run new` generates a single `.mobileconfig` file for a custom DNS resolver. It supports two modes:
+
+### Interactive mode
+
+Running `npm run new` without arguments starts an interactive prompt that walks you through all required and optional fields:
+
+```bash
+npm run new
+```
+
+The prompts ask for provider name, protocol, server URL or hostname, resolver addresses, profile description, output file path, and optionally certificate paths for signing.
+
+### Non-interactive mode
+
+Pass flags directly to skip the prompts. Required flags are `--name`, `--protocol`, `--server`, and `--addresses`:
+
+```bash
+node src/scripts/new.ts \
+  --name "My DNS" \
+  --protocol https \
+  --server https://dns.example/dns-query \
+  --addresses 1.2.3.4,5.6.7.8 \
+  [--out file.mobileconfig] \
+  [--description "..."] \
+  [--ca cert.pem --priv_key key.pem [--chain chain.pem]]
+```
+
+#### Flag reference
+
+| Flag | Description |
+|------|-------------|
+| `--name` | Display name for the profile (required) |
+| `--protocol` | `https` or `tls` (required) |
+| `--server` | Full HTTPS URL for DoH, or a plain hostname for DoT (required) |
+| `--addresses` | Comma-separated list of IPv4/IPv6 addresses. Required for TLS; optional for HTTPS. |
+| `--out` | Output file path. Defaults to `<slug>-<protocol>.mobileconfig`. |
+| `--description` | Profile description text |
+| `--ca` | Path to the signer certificate (`cert.pem`) |
+| `--priv_key` | Path to the private key (`privkey.pem`) |
+| `--chain` | Path to the certificate chain (`chain.pem`). Requires `--ca` and `--priv_key`. |
+
+<Tip>
+When you specify `--ca` and `--priv_key`, `npm run new` signs the generated profile immediately and writes a `.signed.mobileconfig` file alongside the unsigned one.
+</Tip>
+
+#### Protocol rules
+
+- **HTTPS**: `--server` must be a full URL starting with `https://`. Addresses are optional.
+- **TLS**: `--server` must be a plain hostname (no scheme). At least one address is required.
+
+<CodeGroup>
+
+```bash HTTPS example
+node src/scripts/new.ts \
+  --name "Example DoH" \
+  --protocol https \
+  --server https://dns.example/dns-query \
+  --addresses 203.0.113.1,2001:db8::1
+```
+
+```bash TLS example
+node src/scripts/new.ts \
+  --name "Example DoT" \
+  --protocol tls \
+  --server dns.example \
+  --addresses 203.0.113.1,2001:db8::1
+```
+
+</CodeGroup>
+
+---
+
+## `src/scripts/sign-single.ts`
+
+Signs a single `.mobileconfig` file with your certificate. The output is written to `path.signed.mobileconfig` next to the input file:
+
+```bash
+node src/scripts/sign-single.ts \
+  --ca cert.pem \
+  --priv_key key.pem \
+  [--chain chain.pem] \
+  path.mobileconfig
+```
+
+See [Sign mobileconfig profiles with a certificate](/contributing/signing-profiles) for full details on obtaining and using certificates.
+
+---
+
+## `src/scripts/detach.ts`
+
+Extracts the CMS signature from a signed profile and prints the PEM to stdout. Useful for verifying what was signed:
+
+```bash
+node src/scripts/detach.ts signed.mobileconfig
+```
+
+---
+
+## `npm run test`
+
+Runs parity tests that verify `sign-single.ts` and `sign-single-openssl.sh` produce equivalent signatures. The test:
+
+1. Generates temporary root and signer certificates via OpenSSL
+2. Signs the same profile with both implementations
+3. Verifies that the detached content and embedded certificate sets match
+
+```bash
+npm run test
+```
+
+<Note>
+The TypeScript source files use Node.js's `--experimental-strip-types` flag and do not require a separate compilation step. This is set automatically by the `npm run` commands in `package.json`.
+</Note>

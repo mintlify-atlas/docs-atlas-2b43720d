@@ -1,0 +1,136 @@
+---
+title: "Add or edit a DNS provider profile in the repository"
+description: "Learn how to contribute a new DNS provider or edit an existing one by editing JSON source files in the src/ directory and regenerating profiles."
+---
+
+Contributing a DNS provider means editing a JSON file in the `src/` directory. The build system reads those files, generates `.mobileconfig` plist profiles, and regenerates the README tables automatically. You do not edit profile XML by hand.
+
+## Provider JSON format
+
+Each provider lives in a file named `NN-slug.json` inside `src/`, where `NN` is a zero-padded sort order (e.g., `07-cloudflare.json`) and `slug` contains only alphanumeric characters and hyphens.
+
+Here is the full structure for Cloudflare, which demonstrates the most common fields:
+
+```json src/07-cloudflare.json
+{
+    "names": {
+        "en": "Cloudflare 1.1.1.1"
+    },
+    "notes": {
+        "en": "Operated by Cloudflare Inc.",
+        "cmn-CN": "由 Cloudflare 公司运营",
+        "cmn-TW": "由 Cloudflare 公司營運"
+    },
+    "website": "https://developers.cloudflare.com/1.1.1.1/encryption/",
+    "region": "US",
+    "censorship": false,
+    "variants": {
+        "default": {
+            "ServerAddresses": [
+                "2606:4700:4700::1111",
+                "2606:4700:4700::1001",
+                "1.1.1.1",
+                "1.0.0.1"
+            ],
+            "https": {
+                "ServerURLOrName": "https://cloudflare-dns.com/dns-query",
+                "signature": "3046022100..."
+            },
+            "tls": {
+                "ServerURLOrName": "one.one.one.one",
+                "signature": "304402206b..."
+            }
+        },
+        "malware": {
+            "names": {
+                "en": "Security"
+            },
+            "notes": {
+                "en": "Blocks malware & phishing"
+            },
+            "censorship": true,
+            "ServerAddresses": [
+                "1.1.1.2",
+                "1.0.0.2"
+            ],
+            "https": {
+                "ServerURLOrName": "https://security.cloudflare-dns.com/dns-query"
+            }
+        }
+    }
+}
+```
+
+## Field reference
+
+| Field | Required | Description |
+|-------|----------|-------------|
+| `names.en` | Yes | English display name shown in the README table and profile description. |
+| `notes.en` | No | English description — typically the operator name, filtering policy, or both. |
+| `website` | No | URL to the provider's official page, used as the README table link. |
+| `region` | No | ISO 3166-1 alpha-2 country code (e.g., `"US"`) or an array of codes (e.g., `["SG", "US"]`). |
+| `censorship` | No | `true` if the provider filters or blocks any domains; `false` otherwise. Defaults to `false`. |
+| `hidden` | No | Set to `true` to omit the provider from the README table. Used for template files. |
+| `variants` | Yes | Named profile slices. At minimum, define a `"default"` variant. |
+
+### Variant fields
+
+Each entry inside `variants` inherits top-level `names`, `notes`, `censorship`, and `region`. You can override any of these per-variant.
+
+| Field | Description |
+|-------|-------------|
+| `ServerAddresses` | Array of IPv4 and IPv6 resolver addresses. Required for TLS; optional for HTTPS. |
+| `https.ServerURLOrName` | Full HTTPS URL for DNS-over-HTTPS (must begin with `https://`). |
+| `tls.ServerURLOrName` | Hostname for DNS-over-TLS (plain hostname, no scheme). |
+| `https.signature` / `tls.signature` | Hex-encoded CMS signature. Populated by `npm run sign`. Leave empty for unsigned profiles. |
+| `onDemandRules` | Array of Apple on-demand activation rules. See the template for an example. |
+
+<Note>
+Variant names other than `default` require their own `names` entry (in addition to any inherited from the provider level), because the build script concatenates the provider name with the variant name in the final profile.
+</Note>
+
+## How to add a new provider
+
+<Steps>
+  <Step title="Choose a file name">
+    Pick a numeric prefix higher than any existing file and a short slug that identifies the provider. For example, if the highest existing prefix is `28`, you might use `29-myprovider.json`.
+
+    File names must match the pattern `NN-slug.json`, where the slug contains only `[A-Za-z0-9-]`.
+  </Step>
+  <Step title="Create the JSON file">
+    Copy an existing file as a starting point, then fill in the real values. At minimum you need `names.en`, at least one variant, and either `https.ServerURLOrName` or `tls.ServerURLOrName` (or both).
+
+    Verify the resolver addresses against the provider's official website before committing. Open the generated `.mobileconfig` file in a text editor to cross-check IP addresses and hostnames.
+  </Step>
+  <Step title="Regenerate profiles">
+    Run the build script to regenerate all output files:
+
+    ```bash
+    npm run build
+    ```
+
+    This cleans `profiles/` and `signed/`, writes new `.mobileconfig` files, and rewrites the README files.
+  </Step>
+  <Step title="Open a pull request">
+    Commit the new JSON file together with the regenerated profiles and README. Do not commit changes to unrelated provider files.
+  </Step>
+</Steps>
+
+## Editing an existing provider
+
+Edit the relevant `src/NN-slug.json` file, then run `npm run build` to regenerate the outputs. The README table is derived entirely from the JSON source files, so you do not need to edit it manually.
+
+<Info>
+For Apple's full specification of the DNS settings payload, see the [DNSSettings documentation](https://developer.apple.com/documentation/devicemanagement/dnssettings) on the Apple Developer site.
+</Info>
+
+## File naming convention
+
+The numeric prefix controls the sort order in the README table. Lower numbers appear first. Gaps are fine — you do not need to renumber existing files when inserting a new provider.
+
+```
+src/
+├── 07-cloudflare.json
+├── 16-quad9.json
+├── 99-template-on-demand.json   ← hidden: true, excluded from README
+```

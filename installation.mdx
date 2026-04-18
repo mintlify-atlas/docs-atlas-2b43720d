@@ -1,0 +1,75 @@
+---
+title: "How to install an encrypted DNS profile on Apple devices"
+description: "Download and install an encrypted DNS .mobileconfig profile on your iPhone, iPad, or Mac to enable DNS over HTTPS or DNS over TLS system-wide."
+---
+
+Installing an encrypted DNS profile takes less than two minutes. You download a `.mobileconfig` file, open it on your device, and follow the system prompts to apply it. The steps differ slightly between iOS/iPadOS and macOS — follow the section for your platform below.
+
+<Tabs>
+  <Tab title="iOS and iPadOS">
+    <Warning>
+      You must open the profile link in **Safari**. Other browsers — Chrome, Firefox, Brave — download the file without triggering the installation prompt.
+    </Warning>
+
+    <Steps>
+      <Step title="Open the profile link in Safari">
+        Tap the **HTTPS** or **TLS** install link for your chosen provider from the [providers list](/providers/overview). Safari displays a dialog asking whether to allow the download — tap **Allow**.
+      </Step>
+      <Step title="Go to Settings">
+        Open the **Settings** app. A banner at the top reads "Profile Downloaded" — tap it. If you don't see the banner, navigate to **General → VPN, DNS & Device Management**.
+      </Step>
+      <Step title="Install the profile">
+        Tap the downloaded profile, then tap **Install** in the top-right corner. Enter your device passcode if prompted. Review the profile details and tap **Install** again to confirm.
+      </Step>
+      <Step title="Verify installation">
+        The profile now appears under **General → VPN, DNS & Device Management** with a green checkmark. Your device uses the new DNS resolver for all network requests.
+      </Step>
+    </Steps>
+
+    <Check>
+      To confirm it's working, visit a DNS leak test site over your cellular or Wi-Fi connection and verify the resolver matches your chosen provider.
+    </Check>
+  </Tab>
+
+  <Tab title="macOS">
+    <Steps>
+      <Step title="Download the profile">
+        Click the **HTTPS** or **TLS** install link for your chosen provider from the [providers list](/providers/overview). The `.mobileconfig` file downloads to your Downloads folder.
+      </Step>
+      <Step title="Verify the file extension">
+        Before opening the file, confirm it is named `NAME.mobileconfig` and not `NAME.mobileconfig.txt`. If your browser added a `.txt` extension, rename the file to remove it.
+      </Step>
+      <Step title="Open System Settings">
+        Choose **Apple menu → System Settings**, then click **Privacy & Security** in the sidebar. Scroll down and click **Profiles** on the right.
+      </Step>
+      <Step title="Install the profile">
+        Under the **Downloaded** section, double-click the profile. Review the profile contents, then click **Continue** and then **Install**. Enter your Mac's password or use Touch ID when prompted.
+      </Step>
+      <Step title="Verify installation">
+        The profile appears in the **Device Management** list with a checkmark. macOS now routes all DNS queries through the encrypted resolver defined in the profile.
+      </Step>
+    </Steps>
+
+    <Check>
+      To confirm it's working, visit a DNS leak test site in your browser and verify the resolver matches your chosen provider.
+    </Check>
+  </Tab>
+</Tabs>
+
+## Signed vs unsigned profiles
+
+Each provider offers two versions of their profile:
+
+- **Signed profiles** carry a cryptographic signature that Apple verifies during installation. The system confirms the profile has not been modified since it was signed.
+- **Unsigned profiles** are functionally identical but display an "Unsigned" warning during installation. Use these if the signed version is unavailable or if you want to inspect or modify the profile before installing.
+
+<Note>
+  If you install a signed profile and later install an updated version, macOS replaces the previous profile automatically. On iOS, you must remove the old profile first under **General → VPN, DNS & Device Management** before installing the new one.
+</Note>
+
+## Removing a profile
+
+To uninstall a DNS profile and return to your default DNS settings:
+
+- **iOS/iPadOS:** Go to **Settings → General → VPN, DNS & Device Management**, tap the profile, then tap **Remove Profile**.
+- **macOS:** Open **System Settings → Privacy & Security → Profiles**, select the profile, and click the minus button to remove it.

@@ -1,0 +1,67 @@
+---
+title: "Known limitations of encrypted DNS configuration profiles"
+description: "Understand which apps and network conditions bypass system-wide encrypted DNS profiles on iOS and macOS, and how to work around them."
+---
+
+Configuration profiles apply encrypted DNS at the system level on iOS and macOS, but they have boundaries. Some apps resolve DNS through their own mechanisms rather than the system resolver, and some network conditions cause Apple to intentionally suspend the profile. Knowing these limitations helps you make an informed decision about which provider and protocol to use.
+
+<AccordionGroup>
+  <Accordion title="Apps that bypass system DNS">
+    Several apps and system services perform DNS resolution independently of the system resolver, so they are unaffected by any installed configuration profile:
+
+    - **Firefox** (in specific regions): Mozilla runs its own DNS-over-HTTPS implementation directly inside the browser. Depending on your region, Firefox may bypass the system DNS entirely. See [GitHub issue #22](https://github.com/paulmillr/encrypted-dns/issues/22) for details.
+    - **App Store** (all regions): The App Store app bypasses the system DNS resolver in all regions. This is an Apple-imposed behavior.
+    - **iCloud Private Relay**: Apple's Private Relay routes DNS through its own infrastructure. It does not use the system DNS resolver and is not affected by configuration profiles.
+    - **VPN clients**: Active VPN connections typically replace the system DNS configuration entirely, overriding any installed profile for the duration of the VPN session.
+    - **Little Snitch and LuLu**: These macOS firewall applications operate at the network extension level and may route DNS queries through their own resolvers for traffic analysis.
+    - **DNS CLI tools**: Command-line tools such as `host`, `dig`, and `nslookup` send DNS queries directly using their own socket connections and do not go through the system resolver.
+
+    <Note>
+      If privacy is critical for a specific app, check whether that app has its own DNS settings or network extension behavior, and configure it independently.
+    </Note>
+  </Accordion>
+
+  <Accordion title="Wi-Fi captive portals">
+    When you connect to a Wi-Fi network that requires you to log in through a browser page — such as at a hotel, café, or airport — Apple automatically suspends the encrypted DNS profile for that network.
+
+    This is intentional behavior. Captive portal authentication pages often rely on unencrypted DNS to present the login page before the user has authenticated. If encrypted DNS were active at that point, the portal might not load, leaving you unable to connect.
+
+    Once you complete the captive portal authentication, Apple resumes the profile according to your configuration. You do not need to do anything manually.
+
+    <Note>
+      You do not need to add captive portal networks to your on-demand rules exclusion list. Apple exempts them automatically regardless of your profile configuration.
+    </Note>
+  </Accordion>
+
+  <Accordion title="TLS DNS port blocking">
+    DNS over TLS (DoT) uses port 853, which is a non-standard port not used by regular HTTPS traffic. Some network operators, ISPs, and corporate firewalls block port 853 specifically to prevent DoT usage.
+
+    <Tip>
+      If you are on a network where DNS over TLS is being blocked, switch to a DNS over HTTPS profile instead. DoH uses port 443 — the same port as all HTTPS web traffic — making it much harder to block without also disrupting ordinary browsing. See [DoH vs DoT](/guides/understanding-encrypted-dns#doh-vs-dot-when-to-use-each) for a full comparison.
+    </Tip>
+
+    To check whether port 853 is reachable on your current network, you can test connectivity to your provider's resolver hostname on that port.
+  </Accordion>
+
+  <Accordion title="TOR and advanced privacy">
+    Routing encrypted DNS over TOR would provide stronger anonymity by hiding your DNS queries from both your ISP and the DNS provider. The resolver would only see the TOR exit node's IP address, not your actual IP.
+
+    This project's profiles do not support TOR-based DNS routing. The Apple `com.apple.dnsSettings.managed` payload does not provide a mechanism to route queries through TOR, and TOR-aware resolvers are not available as standard mobileconfig endpoints.
+
+    <Warning>
+      If you require anonymity beyond what encrypted DNS provides, consider using the Tor Browser directly, which includes its own DNS resolution through the TOR network.
+    </Warning>
+  </Accordion>
+</AccordionGroup>
+
+## Summary
+
+| Limitation | Workaround |
+|---|---|
+| Firefox bypasses system DNS | Configure DoH directly in Firefox settings |
+| App Store uses its own resolver | No workaround available |
+| iCloud Private Relay overrides DNS | Disable Private Relay if you prefer your chosen provider |
+| VPN overrides profile | Configure DNS within your VPN client settings |
+| DoT blocked on port 853 | Use a DoH profile instead |
+| Captive portals bypass profile | Handled automatically by Apple — no action needed |
+| TOR routing not supported | Use Tor Browser for full DNS anonymity |

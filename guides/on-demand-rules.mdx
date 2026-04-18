@@ -1,0 +1,98 @@
+---
+title: "Exclude trusted Wi-Fi networks with on-demand rules"
+description: "Use on-demand rules to disable encrypted DNS automatically on trusted Wi-Fi networks like your home network, while keeping it active everywhere else."
+---
+
+On-demand rules let you control when a DNS configuration profile is active based on your current network. You can configure a profile to use encrypted DNS on all networks by default, but automatically fall back to your normal DNS when you connect to specific trusted Wi-Fi networks — such as your home router.
+
+## Why you might want on-demand rules
+
+When you are at home, you may already trust your network and DNS setup. Encrypted DNS adds a small overhead, and your ISP's or router's DNS may already be configured the way you want. On public Wi-Fi — at a café, airport, or hotel — the situation is very different: you have no control over the network, and anyone on it could observe or tamper with your DNS queries.
+
+On-demand rules let you get the best of both:
+
+- Encrypted DNS active on public networks and cellular
+- Normal DNS on your home network (or any other trusted SSID you specify)
+
+## How on-demand rules work
+
+On-demand rules are defined in the `OnDemandRules` array inside the `PayloadContent` dictionary of a `.mobileconfig` profile. Apple evaluates the rules in order and applies the action of the first matching rule.
+
+Each rule has an `Action` — either `Connect` (activate the profile) or `Disconnect` (bypass it) — and optional conditions such as `SSIDMatch` to match specific Wi-Fi network names.
+
+The template used by this project defines a two-rule pattern:
+
+```json
+"onDemandRules": [
+    {
+        "Action": "Disconnect",
+        "SSIDMatch": [
+            "TRUSTED_NETWORK_1",
+            "TRUSTED_NETWORK_2",
+            "TRUSTED_NETWORK_3"
+        ]
+    },
+    {
+        "Action": "Connect"
+    }
+]
+```
+
+This configuration works as follows:
+
+1. If the current Wi-Fi SSID matches any entry in `SSIDMatch`, Apple disconnects (bypasses) the encrypted DNS profile.
+2. For all other networks — including cellular, unknown Wi-Fi, and any SSID not in the list — Apple connects (activates) the profile.
+
+## How to customize the SSID list
+
+Replace the placeholder SSID strings with the actual names of the Wi-Fi networks you want to trust. The SSID names are case-sensitive and must match exactly.
+
+```json
+"onDemandRules": [
+    {
+        "Action": "Disconnect",
+        "SSIDMatch": [
+            "MyHomeNetwork",
+            "MyOfficeWiFi"
+        ]
+    },
+    {
+        "Action": "Connect"
+    }
+]
+```
+
+<Steps>
+  <Step title="Find your network name">
+    On your iPhone or Mac, go to **Settings → Wi-Fi** (iOS) or the Wi-Fi menu (macOS) and note the exact name of your trusted network.
+  </Step>
+  <Step title="Edit the source JSON">
+    Open the provider's JSON file in the `src/` directory of the repository. Add your SSIDs to the `onDemandRules` array under `SSIDMatch`.
+  </Step>
+  <Step title="Build the profile">
+    Run `npm run build` to regenerate the `.mobileconfig` files from the updated source. See [build scripts](/contributing/build-scripts) for setup instructions.
+  </Step>
+  <Step title="Install the generated profile">
+    Install the newly generated profile from the `profiles/` directory. If you had a previous version of the profile installed, remove it first to avoid conflicts.
+  </Step>
+</Steps>
+
+<Warning>
+  The standard pre-built profiles available in the repository do not include on-demand rules. You must build the profile from source to add them. The `src/99-template-on-demand.json` file in the repository is the reference template for this feature.
+</Warning>
+
+## Adding on-demand rules to a custom profile
+
+If you are creating a new provider profile, you can add the `onDemandRules` key at the provider level in your JSON source file. Refer to [adding providers](/contributing/adding-providers) for the full JSON schema.
+
+The `onDemandRules` key is inherited by all variants of a provider. You can also set it per-variant if different profiles for the same provider need different behavior.
+
+## Captive portals
+
+When you connect to a Wi-Fi network that requires authentication through a browser — such as at a hotel, airport, or café — Apple automatically exempts that network from encrypted DNS rules. This allows the captive portal page to load correctly.
+
+<Note>
+  You do not need to add captive portal networks to your `SSIDMatch` list. Apple handles this automatically for any network that presents a captive portal, regardless of your on-demand rules configuration.
+</Note>
+
+This exemption is temporary and limited to the captive portal authentication flow. Once you have authenticated and the portal is dismissed, your encrypted DNS profile resumes according to the configured rules.

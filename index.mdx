@@ -1,97 +1,58 @@
 ---
-title: "Introduction"
-description: "Welcome to the new home for your documentation"
+title: "Encrypted DNS: DoH & DoT profiles for iOS & macOS"
+description: "Install DNS over HTTPS and DNS over TLS configuration profiles on iPhone, iPad, and Mac. Choose from 35+ providers including Cloudflare, Google, and Quad9."
 ---
 
-## Setting up
+Encrypted DNS provides ready-to-install `.mobileconfig` configuration profiles that enable DNS over HTTPS (DoH) and DNS over TLS (DoT) on iOS and macOS. Instead of sending DNS queries in plain text, these profiles encrypt your DNS traffic — protecting your browsing from eavesdropping and tampering on untrusted networks.
 
-Get your documentation site up and running in minutes.
-
-<Card
-  title="Start here"
-  icon="rocket"
-  href="/quickstart"
-  horizontal
->
-  Follow our three step quickstart guide.
-</Card>
-
-## Make it yours
-
-Design a docs site that looks great and empowers your users.
-
-<Columns cols={2}>
-  <Card
-    title="Edit locally"
-    icon="pen-to-square"
-    href="/development"
-  >
-    Edit your docs locally and preview them in real time.
+<CardGroup cols={2}>
+  <Card title="Install a profile" icon="download" href="/installation">
+    Get encrypted DNS running on your iPhone, iPad, or Mac in minutes
   </Card>
-  <Card
-    title="Customize your site"
-    icon="palette"
-    href="/essentials/settings"
-  >
-    Customize the design and colors of your site to match your brand.
+  <Card title="Browse providers" icon="list" href="/providers/overview">
+    Compare 35+ DNS providers — from Cloudflare to AdGuard to Quad9
   </Card>
-    <Card
-    title="Set up navigation"
-    icon="map"
-    href="/essentials/navigation"
-  >
-    Organize your docs to help users find what they need and succeed with your product.
+  <Card title="How it works" icon="shield" href="/guides/understanding-encrypted-dns">
+    Understand DNS over HTTPS and DNS over TLS and when to use each
   </Card>
-  <Card
-    title="API documentation"
-    icon="terminal"
-    href="/api-reference/introduction"
-  >
-    Auto-generate API documentation from OpenAPI specifications.
+  <Card title="Contribute" icon="code-branch" href="/contributing/adding-providers">
+    Add a new provider or improve an existing profile
   </Card>
-</Columns>
+</CardGroup>
 
-## Create beautiful pages
+## Get started in three steps
 
-Everything you need to create world-class documentation.
+<Steps>
+  <Step title="Choose a provider">
+    Browse the [provider list](/providers/overview) and pick a DNS provider that fits your needs. Cloudflare 1.1.1.1, Google Public DNS, and Quad9 are popular starting points.
+  </Step>
+  <Step title="Download the profile">
+    Click the **HTTPS** or **TLS** install link for your chosen provider. On iPhone or iPad, open the link in Safari. On Mac, download and double-click the `.mobileconfig` file.
+  </Step>
+  <Step title="Install on your device">
+    Follow the system prompts to install the configuration profile. On iOS, go to **Settings → General → VPN, DNS & Device Management**. On macOS, go to **System Settings → Privacy & Security → Profiles**.
+  </Step>
+</Steps>
 
-<Columns cols={2}>
-  <Card
-    title="Write with MDX"
-    icon="pen-fancy"
-    href="/essentials/markdown"
-  >
-    Use MDX to style your docs pages.
-  </Card>
-  <Card
-    title="Code samples"
-    icon="code"
-    href="/essentials/code"
-  >
-    Add sample code to demonstrate how to use your product.
-  </Card>
-  <Card
-    title="Images"
-    icon="image"
-    href="/essentials/images"
-  >
-    Display images and other media.
-  </Card>
-  <Card
-    title="Reusable snippets"
-    icon="recycle"
-    href="/essentials/reusable-snippets"
-  >
-    Write once and reuse across your docs.
-  </Card>
-</Columns>
+## Why use encrypted DNS?
 
-## Need inspiration?
+Standard DNS queries are sent in plaintext, making them visible to anyone on your network — your ISP, the coffee shop Wi-Fi router, or a malicious actor on a public hotspot. Encrypted DNS prevents this by wrapping DNS queries in HTTPS or TLS encryption.
 
-<Card
-  title="See complete examples"
-  icon="stars"
-  href="https://mintlify.com/customers"
->
-  Browse our showcase of exceptional documentation sites.
-</Card>
+<CardGroup cols={2}>
+  <Card title="No filtering" icon="globe" href="/providers/no-filtering">
+    Pure DNS resolution with no content blocking — Cloudflare, Google, Quad9 unfiltered
+  </Card>
+  <Card title="Ad & tracker blocking" icon="ban" href="/providers/ad-blocking">
+    Block ads and trackers at the DNS level — AdGuard, Mullvad, BlahDNS
+  </Card>
+  <Card title="Family protection" icon="house" href="/providers/family-protection">
+    Block adult content and malware — OpenDNS FamilyShield, Cloudflare Family
+  </Card>
+  <Card title="Security filtering" icon="lock" href="/providers/security-filtering">
+    Block malware and phishing domains — Quad9, Cloudflare Security, CleanBrowsing
+  </Card>
+</CardGroup>
+
+<Note>
+  Configuration profiles are system-level settings. Some apps — including Firefox in certain regions and iCloud Private Relay — bypass the system DNS and will not use these profiles. See [known issues](/guides/known-issues) for details.
+</Note>

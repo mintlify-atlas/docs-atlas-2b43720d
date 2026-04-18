@@ -1,0 +1,97 @@
+---
+title: "Compare DNS providers: filtering, protocol, and region"
+description: "Compare every supported DNS provider by filtering type and protocol so you can choose the right profile for your privacy and safety needs."
+---
+
+Choosing a DNS provider comes down to two questions: what protocol you want to use, and how much filtering you want applied to your queries. This page summarizes every provider available in the encrypted-dns project so you can make an informed choice before downloading a profile.
+
+## Protocols: DoH vs DoT
+
+**DNS over HTTPS (DoH)** tunnels queries inside standard HTTPS traffic on port 443. It is the most widely supported option and the hardest for networks to block or identify. **DNS over TLS (DoT)** uses a dedicated encrypted connection on port 853. DoT is easier for network operators to detect and block, but it cleanly separates DNS from general HTTPS traffic.
+
+<Info>
+  Most providers offer DoH. Not all providers offer DoT. If you are on a restrictive network, prefer DoH profiles.
+</Info>
+
+## Filtering types
+
+The project classifies providers along a single axis called **censorship**. A provider with `censorship: true` will not return the true IP address for some hostnames — it withholds or redirects records to enforce a policy. That policy can be useful (blocking malware) or a matter of preference (blocking ads). Four categories are used in this documentation:
+
+- **No filtering** — pure DNS resolution, no records withheld.
+- **Ad-blocking** — ads, trackers, and sometimes malware domains are blocked.
+- **Family protection** — adult content and malware are blocked in addition to the above.
+- **Security filtering** — malware and phishing domains are blocked, but adult content is not.
+
+## Signed vs unsigned profiles
+
+Each `.mobileconfig` file is available in a signed and unsigned form. Signed profiles carry a cryptographic signature so iOS and macOS can verify they have not been tampered with. The download links on every page in this section point to the **unsigned** profiles hosted directly on GitHub.
+
+<Note>
+  Signed profiles are in the `signed/` directory of the repository and have the same filename as their unsigned counterparts. You can also build your own signed copies — see [signing profiles](/contributing/signing-profiles) for instructions.
+</Note>
+
+## Browse by category
+
+<CardGroup cols={2}>
+  <Card title="No filtering" icon="shield-off" href="/providers/no-filtering">
+    Pure DNS resolution with no records withheld. Best for privacy-conscious users who want full, unmodified DNS responses.
+  </Card>
+  <Card title="Ad-blocking" icon="ban" href="/providers/ad-blocking">
+    Blocks ads, trackers, and in some cases malware at the DNS level, with no restrictions on adult content.
+  </Card>
+  <Card title="Family protection" icon="house" href="/providers/family-protection">
+    Blocks adult content and malware. Suitable for households with children or shared devices.
+  </Card>
+  <Card title="Security filtering" icon="shield-check" href="/providers/security-filtering">
+    Blocks malware and phishing domains without restricting adult content.
+  </Card>
+</CardGroup>
+
+## Provider summary
+
+The table below lists every provider, its region, filtering category, and which protocols are available as downloadable profiles.
+
+| Provider | Region | Filtering | DoH | DoT |
+|---|---|---|---|---|
+| Cloudflare 1.1.1.1 | 🇺🇸 US | None | ✓ | ✓ |
+| Cloudflare 1.1.1.1 Security | 🇺🇸 US | Security | ✓ | — |
+| Cloudflare 1.1.1.1 Family | 🇺🇸 US | Family | ✓ | — |
+| Google Public DNS | 🇺🇸 US | None | ✓ | ✓ |
+| Quad9 | 🇨🇭 CH | Security | ✓ | ✓ |
+| Quad9 w/ ECS | 🇨🇭 CH | Security | ✓ | ✓ |
+| Quad9 Unfiltered | 🇨🇭 CH | None | ✓ | ✓ |
+| AdGuard DNS Default | 🇷🇺 RU | Ad-blocking / Security | ✓ | ✓ |
+| AdGuard DNS Family Protection | 🇷🇺 RU | Family | ✓ | ✓ |
+| AdGuard DNS Non-filtering | 🇷🇺 RU | None | ✓ | ✓ |
+| Mullvad DNS | 🇸🇪 SE | Security | ✓ | — |
+| Mullvad DNS Adblock | 🇸🇪 SE | Ad-blocking | ✓ | — |
+| BlahDNS CDN Filtered | 🇺🇸 US | Ad-blocking | ✓ | — |
+| BlahDNS CDN Unfiltered | 🇺🇸 US | None | ✓ | — |
+| BlahDNS Germany | 🇩🇪 DE | Ad-blocking | ✓ | — |
+| BlahDNS Singapore | 🇸🇬 SG | Ad-blocking | ✓ | — |
+| OpenDNS Standard | 🇺🇸 US | None | ✓ | — |
+| OpenDNS FamilyShield | 🇺🇸 US | Family | ✓ | — |
+| Cleanbrowsing Family Filter | 🇺🇸 US | Family | ✓ | ✓ |
+| Cleanbrowsing Adult Filter | 🇺🇸 US | Family | ✓ | ✓ |
+| Cleanbrowsing Security Filter | 🇺🇸 US | Security | ✓ | ✓ |
+| Canadian Shield Private | 🇨🇦 CA | None | ✓ | ✓ |
+| Canadian Shield Protected | 🇨🇦 CA | Security | ✓ | ✓ |
+| Canadian Shield Family | 🇨🇦 CA | Family | ✓ | ✓ |
+| Aliyun Public DNS | 🇨🇳 CN | None | ✓ | ✓ |
+| DNSPod Public DNS | 🇨🇳 CN | None | ✓ | ✓ |
+| FDN | 🇫🇷 FR | None | ✓ | ✓ |
+| FFMUC-DNS | 🇩🇪 DE | None | ✓ | ✓ |
+| Alekberg Encrypted DNS | 🇳🇱 NL | None | ✓ | — |
+| keweonDNS | 🇩🇪 DE | Ad-blocking | ✓ | ✓ |
+| Tiarap | 🇸🇬🇺🇸 SG/US | Ad-blocking | ✓ | ✓ |
+| ADNull DNS | 🇺🇦 UA | Ad-blocking | ✓ | — |
+| DNS4EU | 🇨🇿 CZ | None | ✓ | ✓ |
+| DNS4EU Protective | 🇨🇿 CZ | Security | ✓ | ✓ |
+| DNS4EU Protective ad-blocking | 🇨🇿 CZ | Ad-blocking | ✓ | ✓ |
+| DNS4EU Protective with child protection | 🇨🇿 CZ | Family | ✓ | ✓ |
+| DNS4EU Protective with child protection & ad-blocking | 🇨🇿 CZ | Family | ✓ | ✓ |
+| 360 Security DNS | 🇨🇳 CN | Family | ✓ | — |
+
+<Tip>
+  Download links for every profile follow the pattern `https://github.com/paulmillr/encrypted-dns/raw/master/profiles/PROVIDER-VARIANT-PROTOCOL.mobileconfig`. For example, `cloudflare-default-https.mobileconfig` or `adguard-default-tls.mobileconfig`. Each category page provides direct links for all profiles in that group.
+</Tip>

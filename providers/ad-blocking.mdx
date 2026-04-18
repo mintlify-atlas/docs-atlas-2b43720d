@@ -1,0 +1,174 @@
+---
+title: "Ad-blocking DNS providers for cleaner browsing"
+description: "DNS providers that block ads, trackers, and in some cases malware at the resolver level — no browser extension or separate app required."
+---
+
+Ad-blocking DNS providers intercept queries for known ad-serving, tracking, and analytics domains before they ever reach your device. Because filtering happens at the DNS layer, it applies system-wide to every app, not just your browser. The providers on this page block at least ads and tracking; some also block malware or phishing domains.
+
+<Info>
+  DNS-level ad-blocking cannot filter inline ads on the same domain as the content (for example, YouTube ads served from `youtube.com`). For those cases you still need a browser extension or a local proxy.
+</Info>
+
+## AdGuard DNS Default
+
+**Region:** 🇷🇺 RU — Operated by AdGuard Software Ltd.
+
+AdGuard's Default tier blocks ads, trackers, and phishing domains using AdGuard's own regularly updated filter lists. It offers both DoH and DoT.
+
+| Detail | Value |
+|---|---|
+| IPv4 addresses | `94.140.14.14`, `94.140.15.15` |
+| IPv6 addresses | `2a10:50c0::ad1:ff`, `2a10:50c0::ad2:ff` |
+| DoH URL | `https://dns.adguard.com/dns-query` |
+| DoT hostname | `dns.adguard.com` |
+
+**Download profile:**
+
+- [HTTPS (DoH)](https://github.com/paulmillr/encrypted-dns/raw/master/profiles/adguard-default-https.mobileconfig)
+- [TLS (DoT)](https://github.com/paulmillr/encrypted-dns/raw/master/profiles/adguard-default-tls.mobileconfig)
+
+---
+
+## Mullvad DNS Adblock
+
+**Region:** 🇸🇪 SE — Operated by Mullvad VPN AB
+
+Mullvad's Adblock resolver blocks ads and trackers. It is available as a public service regardless of whether you use Mullvad's VPN. Only DoH is offered.
+
+| Detail | Value |
+|---|---|
+| IPv4 address | `194.242.2.3` |
+| IPv6 address | `2a07:e340::3` |
+| DoH URL | `https://adblock.doh.mullvad.net/dns-query` |
+
+**Download profile:**
+
+- [HTTPS (DoH)](https://github.com/paulmillr/encrypted-dns/raw/master/profiles/mullvad-adblock-https.mobileconfig)
+
+---
+
+## BlahDNS CDN Filtered
+
+**Region:** 🇺🇸 US — Independent
+
+BlahDNS is independently operated. The CDN Filtered variant routes through a CDN edge and blocks ads, tracking, and malware domains. Only DoH is available for this variant.
+
+| Detail | Value |
+|---|---|
+| DoH URL | `https://doh1.blahdns.com/dns-query` |
+
+**Download profile:**
+
+- [HTTPS (DoH)](https://github.com/paulmillr/encrypted-dns/raw/master/profiles/blahdns-cdn-adblock-https.mobileconfig)
+
+---
+
+## BlahDNS Germany
+
+**Region:** 🇩🇪 DE — Independent
+
+BlahDNS Germany is a dedicated node in Frankfurt that blocks ads, tracking, and malware. It is a good choice for European users who want lower latency filtering.
+
+| Detail | Value |
+|---|---|
+| IPv4 address | `78.46.244.143` |
+| IPv6 address | `2a01:4f8:c17:ec67::1` |
+| DoH URL | `https://doh-de.blahdns.com/dns-query` |
+
+**Download profile:**
+
+- [HTTPS (DoH)](https://github.com/paulmillr/encrypted-dns/raw/master/profiles/blahdns-germany-https.mobileconfig)
+
+---
+
+## BlahDNS Singapore
+
+**Region:** 🇸🇬 SG — Independent
+
+BlahDNS Singapore is a dedicated Asia-Pacific node that blocks ads, tracking, and malware, useful for users across Southeast Asia and the Pacific.
+
+| Detail | Value |
+|---|---|
+| IPv4 address | `46.250.226.242` |
+| IPv6 address | `2407:3640:2205:1668::1` |
+| DoH URL | `https://doh-sg.blahdns.com/dns-query` |
+
+**Download profile:**
+
+- [HTTPS (DoH)](https://github.com/paulmillr/encrypted-dns/raw/master/profiles/blahdns-singapore-https.mobileconfig)
+
+---
+
+## keweonDNS
+
+**Region:** 🇩🇪 DE — Operated by Aviontex
+
+keweonDNS blocks ads and tracking domains. The operator publishes details about the blocking methodology in the XDA Developers thread linked from the website field in the source configuration.
+
+| Detail | Value |
+|---|---|
+| DoH URL | `https://dns.keweon.center/dns-query` |
+| DoT hostname | `dns.keweon.center` |
+
+**Download profile:**
+
+- [HTTPS (DoH)](https://github.com/paulmillr/encrypted-dns/raw/master/profiles/keweondns-default-https.mobileconfig)
+- [TLS (DoT)](https://github.com/paulmillr/encrypted-dns/raw/master/profiles/keweondns-default-tls.mobileconfig)
+
+---
+
+## Tiarap
+
+**Region:** 🇸🇬🇺🇸 SG / US — Operated by Tiarap Inc.
+
+Tiarap blocks ads, tracking, phishing, and malware. It operates nodes in both Singapore and the United States and supports both DoH and DoT.
+
+| Detail | Value |
+|---|---|
+| DoH URL | `https://doh.tiar.app/dns-query` |
+| DoT hostname | `dot.tiar.app` |
+
+**Download profile:**
+
+- [HTTPS (DoH)](https://github.com/paulmillr/encrypted-dns/raw/master/profiles/tiarapp-default-https.mobileconfig)
+- [TLS (DoT)](https://github.com/paulmillr/encrypted-dns/raw/master/profiles/tiarapp-default-tls.mobileconfig)
+
+---
+
+## ADNull DNS
+
+**Region:** 🇺🇦 UA — Operated by ADNull
+
+ADNull is a public DNS service that blocks ads and tracking. Paid subscribers receive a personalised subdomain with advanced ad and phishing blocking options. The free public endpoint listed here works for anyone.
+
+<Note>
+  If you have an ADNull paid plan, replace the hostname in the downloaded profile with your personal subdomain (for example, `abc123.dns.adnull.com/dns-query`) before installing.
+</Note>
+
+| Detail | Value |
+|---|---|
+| DoH URL | `https://dns.adnull.com/dns-query` |
+
+**Download profile:**
+
+- [HTTPS (DoH)](https://github.com/paulmillr/encrypted-dns/raw/master/profiles/adnull-default-https.mobileconfig)
+
+---
+
+## DNS4EU Protective ad-blocking
+
+**Region:** 🇨🇿 CZ — Operated by a consortium led by Whalebone
+
+This DNS4EU variant blocks both malware and ads, combining the Protective tier's malware blocking with ad-filter lists. Both DoH and DoT are available.
+
+| Detail | Value |
+|---|---|
+| IPv4 addresses | `86.54.11.13`, `86.54.11.213` |
+| IPv6 addresses | `2a13:1001::86:54:11:13`, `2a13:1001::86:54:11:213` |
+| DoH URL | `https://noads.joindns4.eu/dns-query` |
+| DoT hostname | `noads.joindns4.eu` |
+
+**Download profile:**
+
+- [HTTPS (DoH)](https://github.com/paulmillr/encrypted-dns/raw/master/profiles/dns4eu-protective-ads-https.mobileconfig)
+- [TLS (DoT)](https://github.com/paulmillr/encrypted-dns/raw/master/profiles/dns4eu-protective-ads-tls.mobileconfig)

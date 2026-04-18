@@ -1,0 +1,184 @@
+---
+title: "Security-filtering DNS providers against malware"
+description: "DNS providers that block malware and phishing domains without restricting adult content — a good default upgrade from unfiltered DNS for most users."
+---
+
+Security-filtering providers block domains associated with malware, ransomware, and phishing while leaving all other content — including adult sites — fully accessible. This makes them a practical upgrade from a plain unfiltered resolver for most users and devices: you get meaningful threat protection without any content restrictions.
+
+<Tip>
+  If you are unsure which category to choose, a security-filtering provider is a reasonable default. You get protection against the most common DNS-based threats without any side effects on legitimate browsing.
+</Tip>
+
+## Quad9
+
+**Region:** 🇨🇭 CH — Operated by Quad9 Foundation
+
+Quad9 is a non-profit resolver that aggregates threat intelligence from multiple security vendors to block malware domains in real time. It supports both DoH and DoT and validates DNSSEC.
+
+| Detail | Value |
+|---|---|
+| IPv4 addresses | `9.9.9.9`, `149.112.112.112` |
+| IPv6 addresses | `2620:fe::fe`, `2620:fe::9` |
+| DoH URL | `https://dns.quad9.net/dns-query` |
+| DoT hostname | `dns.quad9.net` |
+
+**Download profile:**
+
+- [HTTPS (DoH)](https://github.com/paulmillr/encrypted-dns/raw/master/profiles/quad9-default-https.mobileconfig)
+- [TLS (DoT)](https://github.com/paulmillr/encrypted-dns/raw/master/profiles/quad9-default-tls.mobileconfig)
+
+---
+
+## Quad9 w/ ECS
+
+**Region:** 🇨🇭 CH — Operated by Quad9 Foundation
+
+This variant behaves identically to the standard Quad9 resolver but also supports EDNS Client Subnet (ECS), which can improve geolocation accuracy for CDN-hosted content at the cost of sharing a portion of your IP address with upstream resolvers.
+
+| Detail | Value |
+|---|---|
+| IPv4 addresses | `9.9.9.11`, `149.112.112.11` |
+| IPv6 addresses | `2620:fe::fe:11`, `2620:fe::11` |
+| DoH URL | `https://dns11.quad9.net/dns-query` |
+| DoT hostname | `dns11.quad9.net` |
+
+**Download profile:**
+
+- [HTTPS (DoH)](https://github.com/paulmillr/encrypted-dns/raw/master/profiles/quad9-ECS-https.mobileconfig)
+- [TLS (DoT)](https://github.com/paulmillr/encrypted-dns/raw/master/profiles/quad9-ECS-tls.mobileconfig)
+
+---
+
+## Cloudflare 1.1.1.1 Security
+
+**Region:** 🇺🇸 US — Operated by Cloudflare Inc.
+
+Cloudflare's Security variant (sometimes called 1.1.1.2) blocks malware and phishing domains using Cloudflare's threat intelligence. Only DoH is available for this variant.
+
+| Detail | Value |
+|---|---|
+| IPv4 addresses | `1.1.1.2`, `1.0.0.2` |
+| IPv6 addresses | `2606:4700:4700::1112`, `2606:4700:4700::1002` |
+| DoH URL | `https://security.cloudflare-dns.com/dns-query` |
+
+**Download profile:**
+
+- [HTTPS (DoH)](https://github.com/paulmillr/encrypted-dns/raw/master/profiles/cloudflare-malware-https.mobileconfig)
+
+---
+
+## AdGuard DNS Default
+
+**Region:** 🇷🇺 RU — Operated by AdGuard Software Ltd.
+
+AdGuard's Default tier blocks ads and trackers in addition to phishing domains. It is listed here because its phishing and malware blocking makes it a meaningful security layer even if you primarily use it for ad-blocking. Both DoH and DoT are available.
+
+| Detail | Value |
+|---|---|
+| IPv4 addresses | `94.140.14.14`, `94.140.15.15` |
+| IPv6 addresses | `2a10:50c0::ad1:ff`, `2a10:50c0::ad2:ff` |
+| DoH URL | `https://dns.adguard.com/dns-query` |
+| DoT hostname | `dns.adguard.com` |
+
+**Download profile:**
+
+- [HTTPS (DoH)](https://github.com/paulmillr/encrypted-dns/raw/master/profiles/adguard-default-https.mobileconfig)
+- [TLS (DoT)](https://github.com/paulmillr/encrypted-dns/raw/master/profiles/adguard-default-tls.mobileconfig)
+
+---
+
+## Canadian Shield Protected
+
+**Region:** 🇨🇦 CA — Operated by the Canadian Internet Registration Authority (CIRA)
+
+The Protected tier of Canadian Shield blocks malware and phishing. CIRA's infrastructure is located entirely within Canada. Both DoH and DoT are available.
+
+| Detail | Value |
+|---|---|
+| IPv4 addresses | `149.112.121.20`, `149.112.122.20` |
+| IPv6 addresses | `2620:10a:80bb::20`, `2620:10a:80bc::20` |
+| DoH URL | `https://protected.canadianshield.cira.ca/dns-query` |
+| DoT hostname | `protected.canadianshield.cira.ca` |
+
+**Download profile:**
+
+- [HTTPS (DoH)](https://github.com/paulmillr/encrypted-dns/raw/master/profiles/canadianshield-protected-https.mobileconfig)
+- [TLS (DoT)](https://github.com/paulmillr/encrypted-dns/raw/master/profiles/canadianshield-protected-tls.mobileconfig)
+
+---
+
+## Cleanbrowsing Security Filter
+
+**Region:** 🇺🇸 US — Operated by Cleanbrowsing
+
+The Security Filter blocks malware domains only, with no restrictions on adult content or mixed-content pages. Both DoH and DoT are available.
+
+| Detail | Value |
+|---|---|
+| IPv4 addresses | `185.228.168.9`, `185.228.169.9` |
+| IPv6 addresses | `2a0d:2a00:1::2`, `2a0d:2a00:2::2` |
+| DoH URL | `https://doh.cleanbrowsing.org/doh/security-filter/` |
+| DoT hostname | `security-filter-dns.cleanbrowsing.org` |
+
+**Download profile:**
+
+- [HTTPS (DoH)](https://github.com/paulmillr/encrypted-dns/raw/master/profiles/cleanbrowsing-security-https.mobileconfig)
+- [TLS (DoT)](https://github.com/paulmillr/encrypted-dns/raw/master/profiles/cleanbrowsing-security-tls.mobileconfig)
+
+---
+
+## Mullvad DNS
+
+**Region:** 🇸🇪 SE — Operated by Mullvad VPN AB
+
+Mullvad's default resolver blocks malware. It is a public service independent of their VPN product. Only DoH is available.
+
+| Detail | Value |
+|---|---|
+| IPv4 address | `194.242.2.2` |
+| IPv6 address | `2a07:e340::2` |
+| DoH URL | `https://doh.mullvad.net/dns-query` |
+
+**Download profile:**
+
+- [HTTPS (DoH)](https://github.com/paulmillr/encrypted-dns/raw/master/profiles/mullvad-default-https.mobileconfig)
+
+---
+
+## DNS4EU Protective
+
+**Region:** 🇨🇿 CZ — Operated by a consortium led by Whalebone
+
+DNS4EU Protective is the base security tier of the EU-backed DNS4EU initiative. It blocks malware with no ad-blocking or content filtering. Both DoH and DoT are available.
+
+| Detail | Value |
+|---|---|
+| IPv4 addresses | `86.54.11.1`, `86.54.11.201` |
+| IPv6 addresses | `2a13:1001::86:54:11:1`, `2a13:1001::86:54:11:201` |
+| DoH URL | `https://protective.joindns4.eu/dns-query` |
+| DoT hostname | `protective.joindns4.eu` |
+
+**Download profile:**
+
+- [HTTPS (DoH)](https://github.com/paulmillr/encrypted-dns/raw/master/profiles/dns4eu-malware-https.mobileconfig)
+- [TLS (DoT)](https://github.com/paulmillr/encrypted-dns/raw/master/profiles/dns4eu-malware-tls.mobileconfig)
+
+---
+
+## DNS4EU Protective ad-blocking
+
+**Region:** 🇨🇿 CZ — Operated by a consortium led by Whalebone
+
+This DNS4EU tier extends Protective with ad-blocking. It blocks malware and ads without any adult content filtering. Both DoH and DoT are available.
+
+| Detail | Value |
+|---|---|
+| IPv4 addresses | `86.54.11.13`, `86.54.11.213` |
+| IPv6 addresses | `2a13:1001::86:54:11:13`, `2a13:1001::86:54:11:213` |
+| DoH URL | `https://noads.joindns4.eu/dns-query` |
+| DoT hostname | `noads.joindns4.eu` |
+
+**Download profile:**
+
+- [HTTPS (DoH)](https://github.com/paulmillr/encrypted-dns/raw/master/profiles/dns4eu-protective-ads-https.mobileconfig)
+- [TLS (DoT)](https://github.com/paulmillr/encrypted-dns/raw/master/profiles/dns4eu-protective-ads-tls.mobileconfig)

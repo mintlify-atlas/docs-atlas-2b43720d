@@ -1,0 +1,52 @@
+---
+title: "Introduction to encrypted DNS profiles for Apple devices"
+description: "Learn how encrypted DNS configuration profiles work on Apple platforms and why encrypting your DNS traffic protects your privacy on any network."
+---
+
+Encrypted DNS is a collection of ready-to-install `.mobileconfig` configuration profiles that enable DNS over HTTPS (DoH) and DNS over TLS (DoT) on iOS, iPadOS, and macOS. Standard DNS queries travel in plaintext, exposing every domain name you look up to anyone on your network — your ISP, a router at a coffee shop, or an attacker on public Wi-Fi. These profiles encrypt that traffic at the system level, so your DNS queries are hidden from passive observers and cannot be silently tampered with in transit.
+
+## What .mobileconfig profiles are
+
+A `.mobileconfig` file is a signed XML configuration payload that Apple's operating systems read natively. When you install one, iOS or macOS applies the enclosed settings — in this case, a custom DNS resolver configuration — system-wide, without requiring any additional software. The profile tells the OS which DNS server to use, what protocol to use (HTTPS or TLS), and which server addresses are authoritative. Profiles can be signed with a certificate to guarantee authenticity; unsigned profiles work identically but display a warning during installation.
+
+<Info>
+  Profiles require iOS 14 or later and macOS Big Sur (11) or later. Earlier versions do not support encrypted DNS at the system level.
+</Info>
+
+## DNS over HTTPS vs DNS over TLS
+
+Both protocols encrypt your DNS traffic, but they differ in how they do it:
+
+- **DNS over HTTPS (DoH)** sends DNS queries inside standard HTTPS requests on port 443. Because this traffic is indistinguishable from ordinary web traffic, it is the harder of the two to block.
+- **DNS over TLS (DoT)** encrypts DNS queries using TLS on a dedicated port (853). It is easier for network operators or ISPs to identify and block because it uses a non-standard port.
+
+If you are unsure which to choose, pick the DoH profile for your chosen provider. It offers the same privacy guarantees and is less likely to be blocked on restrictive networks.
+
+## Explore the documentation
+
+<CardGroup cols={2}>
+  <Card title="Install a profile" icon="download" href="/installation">
+    Follow step-by-step instructions to install a DNS profile on iOS or macOS.
+  </Card>
+  <Card title="Browse providers" icon="list" href="/providers/overview">
+    Compare providers by region, filtering, and protocol support.
+  </Card>
+  <Card title="How encrypted DNS works" icon="shield" href="/guides/understanding-encrypted-dns">
+    A deeper look at DoH and DoT — how queries are encrypted and what they protect.
+  </Card>
+  <Card title="Known limitations" icon="triangle-exclamation" href="/guides/known-issues">
+    Learn which apps and scenarios bypass system DNS profiles.
+  </Card>
+</CardGroup>
+
+## Privacy benefits
+
+Installing an encrypted DNS profile protects you in several concrete ways:
+
+- **Prevents eavesdropping.** Your ISP, network operator, or anyone monitoring the wire can no longer read the domain names you resolve.
+- **Prevents tampering.** DNS responses cannot be modified in transit to redirect you to a different server.
+- **Reduces tracking.** Some providers, such as Cloudflare 1.1.1.1, have strict no-logging policies that limit how much data is retained about your queries.
+
+<Note>
+  Encrypting DNS traffic does not make you anonymous. Your IP address, TLS SNI, and HTTPS traffic remain visible to your network and the sites you visit. Encrypted DNS is one layer of privacy, not a complete solution.
+</Note>
